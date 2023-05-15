@@ -1,6 +1,7 @@
 import {Component} from '@angular/core';
 import {ChartConfiguration, ChartOptions} from 'chart.js';
 import myData from './data.json';
+import { DataService } from './data.service';
 
 @Component({
   selector: 'app-root',
@@ -43,10 +44,13 @@ export class AppComponent {
     label: 'Gewicht in kg',
     backgroundColor: 'rgba(63,59,59,0.3)'
   };
+  profileDataSubscription: any;
+  profileDataList: ProfileDataResponse | undefined;
   // the values above are defaults
 
-  constructor() {
-    console.dir(myData);
+  constructor(private dataService: DataService) {
+    // console.dir(myData);
+
 
     this.globalLabels = myData.response[0].queryResultsList.map((queryResult) => {
       return queryResult.Datum;
@@ -55,7 +59,6 @@ export class AppComponent {
       const test = queryResult["Spiermassa in KG"];
       // const testint = parseFloat(test).toFixed(2);
       // return testint;
-      debugger;
       return this.parseFloat(test, 2);
     });
 
@@ -124,4 +127,26 @@ export class AppComponent {
     responsive: true
   };
   public lineChartLegend = true;
+
+  ngOnInit(): void {
+    this.profileDataSubscription = this.dataService.getProfiles().subscribe(
+      data => {
+        this.profileDataList = <ProfileDataResponse>(data);
+        console.log("This should be the response???: ", this.profileDataList);
+
+        const profileNeeded = this.profileDataList.response[0].name;
+        debugger;
+      },
+      err => {
+    
+      });
+  }
+
+}
+
+interface ProfileDataResponse {
+  response: {
+      dateTimeLatestResource: string,
+      name: string
+  }[]
 }
