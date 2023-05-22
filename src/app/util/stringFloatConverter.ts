@@ -4,12 +4,14 @@ export class StringFloatConverter {
 
     public static convertStringFloatToFloatNumber(stringFloat: string): number | null {
         stringFloat = stringFloat.trim().replaceAll(" ", "");
+        console.log('1Running this test now - stringFloat is: ', stringFloat);
+        console.log('2Running this test now - stringFloat is: ', stringFloat);
     
         if(stringFloat.length === 0){
             // if stringFloat is empty
             // return NaN
 
-            return NaN;
+            return null;
         }
 
         if(stringFloat.match(/[^,.\d]/)){
@@ -37,11 +39,11 @@ export class StringFloatConverter {
 
         if(!stringFloat.includes(",")){
             // if contains no comma;
-
+            console.log('Running this test now - no ,');
             if(stringFloat.split(".").length > 2){
                 // if contains multiple dots; remove all dots but last
                 const lastIndexOfDot = stringFloat.lastIndexOf(".");
-                const replacedDotString = stringFloat.substring(0, lastIndexOfDot) + "," + stringFloat.substring(lastIndexOfDot + stringFloat.length);
+                const replacedDotString = stringFloat.substring(0, lastIndexOfDot) + "," + stringFloat.substring(lastIndexOfDot, stringFloat.length);
                 return parseFloat(replacedDotString.replace(".", "").replace(",", "."));
             }
             
