@@ -16,17 +16,28 @@ export class FitnessModel {
 
     constructor(){}
 
+    // public getAvailableProperties(): string[] {
+    //     return Object.getOwnPropertyNames(this);
+    // }
+
     public setNo(no: string){
-        this.no = StringFloatConverter.convertStringFloatToFloatNumber(no);
-        debugger;
+        const convertedNo: number | null = StringFloatConverter.convertStringFloatToFloatNumber(no);
+        this.no = convertedNo ? convertedNo : 0;
+        //todo: if 0 has already been set once,.. throw error if another 0 appears!
+    }
+    
+    public getMetingDoor(): string {
+        return this.metingDoor;
     }
 
     public setMetingDoor(metingDoor: string){
         this.metingDoor = metingDoor;
+        //todo: throw error if empty (string)
     }
 
     public setDatum(datum: string){
         this.datum = datum;
+        //todo: throw error if empty (string)
     }
 
     public getDatum(): string {
@@ -34,36 +45,61 @@ export class FitnessModel {
     }
 
     public setGewicht(gewicht: string){
-        this.gewicht = StringFloatConverter.convertStringFloatToFloatNumber(gewicht);
-        debugger;
+        const convertedGewicht: number | null = StringFloatConverter.convertStringFloatToFloatNumber(gewicht);
+        this.gewicht = convertedGewicht ? convertedGewicht : null;
+        // debugger;
+        //todo: gewicht is a minimum necessary value? throw error if empty or 0?
+    }
+
+    public getGewicht(): number | null {
+        return this.gewicht;
     }
 
     public setVetPercentage(vetPercentage: string){
-        this.vetPercentage = StringFloatConverter.convertStringFloatToFloatNumber(vetPercentage);
+        const convertedVetPercentage: number | null = StringFloatConverter.convertStringFloatToFloatNumber(vetPercentage);
+        this.vetPercentage = convertedVetPercentage ? convertedVetPercentage : null;
+    }
+
+    public getVetPercentage(): number | null {
+        return this.vetPercentage;
     }
 
     public setSpierMassa(spierMassa: string){
-        this.spierMassa = StringFloatConverter.convertStringFloatToFloatNumber(spierMassa);
+        const convertedSpierMassa: number | null = StringFloatConverter.convertStringFloatToFloatNumber(spierMassa);
+        this.spierMassa = convertedSpierMassa ? convertedSpierMassa : null;
+    }
+
+    public getSpierMassa(): number | null {
+        return this.spierMassa;
     }
 
     public setSpierMassaInPercentage(spierMassaInPercentage: string){
-        this.spierMassaInPercentage = StringFloatConverter.convertStringFloatToFloatNumber(spierMassaInPercentage);
+        const convertedSpierMassaPercentage: number | null = StringFloatConverter.convertStringFloatToFloatNumber(spierMassaInPercentage);
+        this.spierMassaInPercentage = convertedSpierMassaPercentage ? convertedSpierMassaPercentage : null;
+    }
+
+    public getLichaamsvocht(): number | null {
+        return this.lichaamsvocht;
     }
 
     public setLichaamsvocht(lichaamsvocht: string){
-        this.lichaamsvocht = StringFloatConverter.convertStringFloatToFloatNumber(lichaamsvocht);
+        const convertedLichaamsVocht = StringFloatConverter.convertStringFloatToFloatNumber(lichaamsvocht);
+        this.lichaamsvocht = convertedLichaamsVocht ? convertedLichaamsVocht : null;
     }
 
     public setLichaamsvochtInPercentage(lichaamsvochtInPercentage: string){
-        this.lichaamsvochtInPercentage = StringFloatConverter.convertStringFloatToFloatNumber(lichaamsvochtInPercentage);
+        const convertedLichaamsVocht = StringFloatConverter.convertStringFloatToFloatNumber(lichaamsvochtInPercentage);
+        this.lichaamsvochtInPercentage = convertedLichaamsVocht ? convertedLichaamsVocht : null;
     }
 
     public setBotmassa(botmassa: string){
-        this.botmassa = StringFloatConverter.convertStringFloatToFloatNumber(botmassa);
+        const convertedBotMassa = StringFloatConverter.convertStringFloatToFloatNumber(botmassa);
+        this.botmassa = convertedBotMassa ? convertedBotMassa : null;
     }
 
     public setBotmassaInPercentage(botmassaInPercentage: string){
-        this.botmassaInPercentage = StringFloatConverter.convertStringFloatToFloatNumber(botmassaInPercentage);
+        const convertedBotMassa = StringFloatConverter.convertStringFloatToFloatNumber(botmassaInPercentage);
+        this.botmassaInPercentage = convertedBotMassa ? convertedBotMassa : null;
     }
 
     public setNotities(notities: string){

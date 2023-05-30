@@ -1,16 +1,17 @@
 export class StringFloatConverter {
 
     private static unuseableDataMsg = `Number format contains not allowed characters`;
+    private static emptyDataMsg = `Parameter may not be empty`;
 
     public static convertStringFloatToFloatNumber(stringFloat: string): number | null {
+        console.log(`1Running this test now - stringFloat is: ${stringFloat}`);
         stringFloat = stringFloat.trim().replaceAll(" ", "");
-        console.log('1Running this test now - stringFloat is: ', stringFloat);
-        console.log('2Running this test now - stringFloat is: ', stringFloat);
+        console.log(`2Running this test now - stringFloat is: ${stringFloat}`);
     
         if(stringFloat.length === 0){
             // if stringFloat is empty
             // return NaN
-
+            // this.showErrorMessage(this.emptyDataMsg, stringFloat);
             return null;
         }
 
@@ -38,19 +39,20 @@ export class StringFloatConverter {
         }
 
         if(!stringFloat.includes(",")){
-            // if contains no comma;
-            console.log('Running this test now - no ,');
-            if(stringFloat.split(".").length > 2){
-                // if contains multiple dots; remove all dots but last
-                const lastIndexOfDot = stringFloat.lastIndexOf(".");
-                const replacedDotString = stringFloat.substring(0, lastIndexOfDot) + "," + stringFloat.substring(lastIndexOfDot, stringFloat.length);
-                return parseFloat(replacedDotString.replace(".", "").replace(",", "."));
-            }
-            
-            // default; contains single or no dots; simply parse the data
-            parseFloat(stringFloat);
+            // if contains multiple dots; remove all dots but last
+            const lastIndexOfDot = stringFloat.lastIndexOf(".");
+            const replacedDotString = stringFloat.substring(0, lastIndexOfDot) + "," + stringFloat.substring(lastIndexOfDot, stringFloat.length);
+            return parseFloat(replacedDotString.replaceAll(".", "").replace(",", "."));
         }
 
+        if(stringFloat.split(".").length > 1){
+            // if contains no comma;
+            console.log(`Running this test now - stringFloaty is ${stringFloat}`);
+
+            return parseFloat(stringFloat.replaceAll(".", "").replace(",", "."));
+        }
+
+        console.log(`Simply has one dot ${stringFloat}`);
         return parseFloat(stringFloat.replace(".", "").replace(",", "."));
     }
 

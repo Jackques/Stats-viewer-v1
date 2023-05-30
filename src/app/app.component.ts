@@ -53,18 +53,6 @@ export class AppComponent {
         this.fitnessDataResponse = <FitnessDataResponse>(data);
         console.log("This should be the fitness response???: ", data);
 
-        debugger;
-
-        // if(this.chart && this.chart.data){
-          // const maxNumberofPoints = 60;
-          // const maxNumberofPoints = 100;
-          // const dateList: string[] = [];
-          // this.fitnessDataResponse?.response[0].queryResultsList.forEach((fitnessDataItem: FitnessData, index: number) => {
-          //   if(index <= maxNumberofPoints){
-          //     dateList.push(fitnessDataItem.Datum);
-          //   }
-          // });
-
           this.fitnessDataResponse?.response[0].queryResultsList.forEach((fitnessDataItem: FitnessData)=>{
             
             const fitnessModel = new FitnessModel;
@@ -84,7 +72,7 @@ export class AppComponent {
 
             this.fitnessModelList.addFitnessModel(fitnessModel);
           });
-
+          
         this.setDataChart(this.fitnessModelList);
       },
       error: (e) => console.error(e),
@@ -106,16 +94,47 @@ export class AppComponent {
   }
 
   private setDataChart(fitnessModelList: FitnessModelList): void {
+
     this.myChart = new Chart('myChart', {
       type: 'line',
       data: {
-        labels: fitnessModelList.getDatumsList(),
+        labels: fitnessModelList.getDatumsWithMetingDoorList(),
         datasets: [
           {
-            label: 'My First Dataset',
-            data: this.getXNumbers(),
+            label: 'VetPercentage',
+            data: fitnessModelList.getVetPercentageList(),
             fill: true,
-            borderColor: 'rgb(75, 192, 192)',
+            borderColor: 'darkgreen',
+            tension: 0.1,
+            backgroundColor: 'green',
+            pointBorderColor: 'lightgreen',
+            pointBackgroundColor: 'lightgreen',
+          },
+          {
+            label: 'Vochtgehalte',
+            data: fitnessModelList.getLichaamsvochtList(),
+            fill: true,
+            borderColor: 'blue',
+            tension: 0.1,
+            backgroundColor: 'blue',
+            pointBorderColor: 'darkblue',
+            pointBackgroundColor: 'darkblue',
+          },
+          {
+            label: 'Spiermassa',
+            data: fitnessModelList.getSpierMassaList(),
+            fill: true,
+            borderColor: 'saddlebrown',
+            tension: 0.1,
+            backgroundColor: 'chocolate',
+            pointBorderColor: 'brown',
+            pointBackgroundColor: 'brown',
+          },
+          {
+            label: 'Gewicht',
+            data: fitnessModelList.getGewichtList(),
+            fill: true,
+            borderColor: 'darkorange',
             tension: 0.1,
             backgroundColor: 'orange',
             pointBorderColor: 'red',
@@ -126,6 +145,7 @@ export class AppComponent {
       options: {
         responsive: true,
         maintainAspectRatio: false,
+        spanGaps: true,
         plugins: {
           zoom: {
             pan: {
