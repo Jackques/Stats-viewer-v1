@@ -1,4 +1,7 @@
 export class StringFloatConverter {
+    static setSpierMassaInPercentage(spierMassaInPercentage: string): number | null {
+        throw new Error("Method not implemented.");
+    }
 
     private static unuseableDataMsg = `Number format contains not allowed characters`;
     private static emptyDataMsg = `Parameter may not be empty`;
