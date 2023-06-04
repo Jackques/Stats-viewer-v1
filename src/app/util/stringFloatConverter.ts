@@ -7,9 +7,9 @@ export class StringFloatConverter {
     private static emptyDataMsg = `Parameter may not be empty`;
 
     public static convertStringFloatToFloatNumber(stringFloat: string): number | null {
-        console.log(`1Running this test now - stringFloat is: ${stringFloat}`);
+        // console.log(`1Running this test now - stringFloat is: ${stringFloat}`);
         stringFloat = stringFloat.trim().replaceAll(" ", "");
-        console.log(`2Running this test now - stringFloat is: ${stringFloat}`);
+        // console.log(`2Running this test now - stringFloat is: ${stringFloat}`);
     
         if(stringFloat.length === 0){
             // if stringFloat is empty
@@ -50,12 +50,12 @@ export class StringFloatConverter {
 
         if(stringFloat.split(".").length > 1){
             // if contains no comma;
-            console.log(`Running this test now - stringFloaty is ${stringFloat}`);
+            // console.log(`Running this test now - stringFloaty is ${stringFloat}`);
 
             return parseFloat(stringFloat.replaceAll(".", "").replace(",", "."));
         }
 
-        console.log(`Simply has one dot ${stringFloat}`);
+        // console.log(`Simply has one dot ${stringFloat}`);
         return parseFloat(stringFloat.replace(".", "").replace(",", "."));
     }
 
