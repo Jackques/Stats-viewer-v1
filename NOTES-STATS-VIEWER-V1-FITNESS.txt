@@ -1,0 +1,17 @@
+1. V fix de update button
+2. V waarden updaten?
+3. V gebruik UI component library (bootstrap? foundation? primeng?)
+4. maak nog 2-3 verschillende grafieken aan, check a.d.h.v. wat nodig is. Sowieso iets met een tooltip!
+	Check dit a.d.h.v. mijkn benodigdheden wat ik wil weten aldus TickTick
+	1. grafiek afgelopen 14 dagen (met name gewicht tracking, +1kg of -1 kg p/week?)
+		1ste rij; als eerste in beeld, 1/3 op deze rij
+	2. grafiek afgelopen 30 dagen
+		1ste rij; als laatste in beeld, 2/3 op deze rij
+	3. V grafiek 90-100 afgelopen dagen
+		1ste rij; als laatste in beeld, 3/3 op deze rij
+	4. grafiek alle dagen (nieuwe query)
+		2de rij; helemaal onderin groot en breed als enige in beeld op block
+	
+5. labels vervangen door icons, notities weergeven in tooltip. indien cheatday in notitie.. highlight/extra icon/gekleurd icon/icon met omlijning?
+
+====

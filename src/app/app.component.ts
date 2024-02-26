@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ChartConfiguration, ChartOptions } from 'chart.js';
+import { ChartConfiguration, ChartOptions, Color, ScriptableLineSegmentContext, ScriptableScaleContext } from 'chart.js';
 import myData from './data.json';
 import { DataService } from './services/data.service';
 import { ProfileDataResponse } from './interfaces/profileDataResponse.interface';
@@ -13,6 +13,7 @@ import { FitnessModel } from './model/fitnessModel';
 import { QueryModel } from './model/queryModel';
 import { QueryResponse } from './interfaces/queryResponse.interface';
 import { ProfileData } from './interfaces/profileData.interface';
+
 Chart.register(zoomPlugin);
 
 @Component({
@@ -45,6 +46,8 @@ export class AppComponent {
 
   public queryUpdateAvailable: boolean = this.queryNeedsUpdate();
 
+  private weekIntervalGewichtList: string[] = [];
+
   constructor(private dataService: DataService) { }
 
   public ngOnInit(): void {
@@ -55,7 +58,7 @@ export class AppComponent {
 
         this.setQueryData().subscribe({
           next: (data: QueryResponse) => {
-            debugger;
+            // debugger;
             this.query = new QueryModel(data.description,
               data.id,
               data.name,
@@ -67,10 +70,10 @@ export class AppComponent {
               data.queryMetaData.affectedProfileNames[0],
               data.querySetResults.queryResults[0].id
             );
-            debugger;
+            // debugger;
             this.setQueryDetails(this.query.getId(), this.query.getDetailsId());
             this.queryUpdateAvailable = this.queryNeedsUpdate();
-            debugger;
+            // debugger;
           },
           error: () => {
           },
@@ -112,12 +115,44 @@ export class AppComponent {
           this.fitnessModelList.addFitnessModel(fitnessModel);
         });
 
+        this.setWeeksIntervalFromGewichtV2(this.fitnessModelList);
         this.setDataChart(this.fitnessModelList);
       },
       error: (e) => console.error(e),
       complete: () => this.renderDataChart()
     });
   }
+
+  private setWeeksIntervalFromGewichtV2(fitnessModelList: FitnessModelList): void {
+    var myDate = new Date();
+
+    fitnessModelList.getDatumsWithMetingDoorList().forEach((datum)=>{
+      myDate.setFullYear(parseInt(datum.slice(0,2)));
+      myDate.setMonth(parseInt(datum.slice(3,5)));
+      myDate.setDate(parseInt(datum.slice(6,10)));
+
+      if(myDate.getDay() == 6 || myDate.getDay() == 0) {
+        this.weekIntervalGewichtList.push(datum);
+      }
+    });
+    console.log(`sun-saturdays`);
+    console.log(this.weekIntervalGewichtList);
+  }
+  // private setWeeksIntervalFromGewicht(fitnessModelList: FitnessModelList) {
+  //   // fitnessModelList.getGewichtList().forEach((gewichtEntry, index)=>{
+      
+  //   // })
+  //   const every_day_list = fitnessModelList.getDatumsList().filter((e, i, arr)=>{
+  //     if(i !== 0 && !e.startsWith(arr[i - 1].slice(0, 9))){
+  //       return false
+  //     }
+  //     return true;
+  //   });
+  //   debugger;
+  //   const every_7nth = (arr: string[], nth: number) => arr.filter((e, i) => i === 0 || i % nth === nth - 1);
+  //   console.log(`Results every 7th entry: `);
+  //   console.log(every_7nth(fitnessModelList.getDatumsList(), 7));
+  // }
 
   private setQueryData(): Observable<QueryResponse> {
     this.fitnessQueryDataSubscription = this.dataService.getFitnessQuery();
@@ -134,10 +169,13 @@ export class AppComponent {
       next: (response: boolean) => {
         if(response){
           this.ngOnInit();
+        }else{
+          console.error(`Query could not be updated`);
         }
+      },
+      error: () => {
         console.error(`Query could not be updated`);
       },
-      error: () => {},
       complete: () => {}
     });
   }
@@ -155,7 +193,31 @@ export class AppComponent {
     }
   }
 
+  private getColorLabel(context: ScriptableScaleContext): "rgba(54, 162, 235, 1)" | "#000000" {
+      const label = context.tick.label;
+      const isString = typeof label === 'string';
+
+      if (isString && this.weekIntervalGewichtList.includes(label)) {
+        console.log(`this is a weekendday: `, label);
+        return 'rgba(54, 162, 235, 1)';
+    }
+    console.log(`this is NOT a weekendday: `, label);
+    return '#000000';
+  };
+
   private setDataChart(fitnessModelList: FitnessModelList): void {
+
+    console.dir(fitnessModelList.getGewichtList());
+
+    debugger;
+    // todo: is this id really the chart id (which is supposed to be number 1) but in string format i.e. '1'?
+    const id = this.myChart?.id;
+
+    // todo: for now i always know the chart id will be 1, so i will just use hardcoded number 1
+    if(this.myChart?.isDatasetVisible(1)){
+      this.myChart?.destroy()
+    }
+
     this.myChart = new Chart('myChart', {
       type: 'line',
       data: {
@@ -193,6 +255,10 @@ export class AppComponent {
           },
           {
             label: 'Gewicht',
+            segment: {
+              borderColor: ctx => colorExample(ctx, 'rgb(192,75,75)'),
+              // pointBorderColor: (ctx:ScriptableLineSegmentContext) => pointStyleExample(ctx),
+            },
             data: fitnessModelList.getGewichtList(),
             fill: true,
             borderColor: '#A9907E',
@@ -208,6 +274,9 @@ export class AppComponent {
         maintainAspectRatio: false,
         spanGaps: true,
         plugins: {
+          legend: {
+            position: 'right',
+          },
           zoom: {
             pan: {
               enabled: true,
@@ -228,11 +297,58 @@ export class AppComponent {
           x: {
             ticks: {
               autoSkip: false,
+              color: (context)=>{return this.getColorLabel(context)},
+              // color: function (context) {
+                
+              //   // if (context.tick.label === "28-05-2023 13:17:06 - Weegschaal thuis") {
+              //   if ( context.tick.label === "28-05-2023 13:17:06 - Weegschaal thuis") {
+              //       return 'rgba(54, 162, 235, 1)';
+              //   }
+              //   return '#000000';
+              // },
+              // backdropColor: function (context) {
+              //   // if (context.tick.label === "28-05-2023 13:17:06 - Weegschaal thuis") {
+              //   if (context.tick.label === "31-05-2023 08:56:32 - Weegschaal thuis") {
+              //       return 'rgba(54, 162, 235, 1)';
+              //   }
+              //   return '#FF0000';
+              // },
+              textStrokeWidth: function (context) {
+                // if (context.tick.label === "28-05-2023 13:17:06 - Weegschaal thuis") {
+                if (context.tick.label === "31-05-2023 08:56:32 - Weegschaal thuis") {
+                    return 1;
+                }
+                return 0;
+              },
+              textStrokeColor: '#FF6600',
             }
-          }
+          },
+          // xAxis:{
+          //   ticks: {
+                
+          //   }
+          // },
         }
       }
     });
+
+    this.myChart.update();
+
+    // const skipped = (ctx: any, value: any) => ctx.p0.skip || ctx.p1.skip ? value : undefined;
+    // const skipped: Color | undefined = (ctx: any, value: any) => {
+    //   debugger;
+    //   return ctx.p0.skip || ctx.p1.skip ? value as Color : undefined;
+    // };
+
+    function colorExample(ctx: ScriptableLineSegmentContext, color: string): Color | undefined {
+      debugger;
+      return ctx.p0.parsed.y > 82 ? color as Color : undefined;
+    }
+
+    function pointStyleExample(ctx: ScriptableLineSegmentContext): string {
+      debugger;
+      return 'Point Style: ' + 'circle';
+    }
   }
 
   private queryNeedsUpdate(): boolean {
